@@ -68,3 +68,14 @@ print(f'catch_rate: {catch_rate}')
 print(f'base_friendship: {base_friendship}')
 print(f'base_exp: {base_exp}')
 print(f'growth_rate: {growth_rate}')
+
+#Breeding
+egg_groups = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[1]/td/a/text()')
+gender     = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[2]/td/span/text()')
+egg_cycles = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[3]/td/text()')
+del egg_cycles[-1]
+egg_cycles.extend(page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[3]/td/small/text()'))
+
+print(f'egg_groups: {egg_groups}')
+print(f'gender: {gender}')
+print(f'egg_cycles: {egg_cycles}')
