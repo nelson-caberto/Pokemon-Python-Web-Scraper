@@ -25,7 +25,7 @@ pokemon_https = list(dict.fromkeys(pokemon_https))
 #be nice and dont spam the site
 time.sleep(1)
 
-pokemon_no = 100
+pokemon_no = 0
 
 page = requests.get(pokemon_https[pokemon_no])
 
@@ -53,3 +53,18 @@ print(f'weight: {weight}')
 print(f'abilities: {abilities}')
 print(f'abilities_h: {abilities_h}')
 print(f'local no: {local_no}')
+
+#Training
+EV_yield        = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[1]/td/text()')
+catch_rate      = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/text()')
+catch_rate.extend(page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/small/text()'))
+base_friendship = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[3]/td/text()')
+base_friendship.extend(page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[3]/td/small/text()'))
+base_exp        = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[4]/td/text()')
+growth_rate     = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[5]/td/text()')
+
+print(f'EV_yield: {EV_yield}')
+print(f'catch_rate: {catch_rate}')
+print(f'base_friendship: {base_friendship}')
+print(f'base_exp: {base_exp}')
+print(f'growth_rate: {growth_rate}')
