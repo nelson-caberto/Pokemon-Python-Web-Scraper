@@ -2,6 +2,8 @@ from lxml import html, etree #etree needed for debug/printing htmlelement
 import requests
 import time
 
+import sys #using exit() for debugging
+
 #Pokemondb.net Pokedex Website
 url = "https://pokemondb.net/pokedex/all"
 
@@ -21,6 +23,11 @@ pokemon_https = ["https://pokemondb.net{0}".format(name) for name in pokemon_nam
 
 #Remove Duplicates
 pokemon_https = list(dict.fromkeys(pokemon_https))
+
+#Remove Duplicates including original
+pokemon_https = [name for name in pokemon_names if pokemon_names.count(name) == 1]
+#print(pokemon_https)
+#sys.exit()
 
 #be nice and dont spam the site
 time.sleep(1)
@@ -197,5 +204,8 @@ print(f'dra: {dra}')
 print(f'dar: {dar}')
 print(f'ste: {ste}')
 print(f'fai: {fai}')
+
+#Pokedex entries
+
 
 #print(f': {}')
