@@ -4,6 +4,7 @@ import requests
 import pickle
 import os
 import time
+import sys #used for debugging
 
 def getPokemonHTTPList(url):
 	print("Checking pokemon.http...", end='')
@@ -69,11 +70,17 @@ def GETPokemonRequest(pokemon, pokemon_dir):
 
 	return page_html
 
-def scrapePokedexData(page_html, debug=False):
+def scrapePokedexData(page_html, debug=False, initLabel=False):
+	if 'rowLabel' not in scrapePokedexData.__dict__:
+		scrapePokedexData.rowLabel = ['Name', 'National No', 'Types', 'Species', 'Height', 'Weight', 'Abilities', 'Hidden Abilities', 'Local No']
+	if initLabel: return
+	
 	name        = page_html.xpath('//main/h1/text()')
+	name        = name[0]
 	national_no = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[1]/td/strong/text()')
 	types       = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[2]/td/a/text()')
 	species     = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[3]/td/text()')
+	species     = species[0]
 	height      = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[4]/td/text()')
 	height[0]   = height[0].replace(u'\xa0', ' ')
 	weight      = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[5]/td/text()')
@@ -95,7 +102,11 @@ def scrapePokedexData(page_html, debug=False):
 		
 	return [name, national_no, types, species, height, weight, abilities, abilities_h, local_no]
 	
-def scrapeTrainingData(page_html, debug=False):
+def scrapeTrainingData(page_html, debug=False, initLabel=False):
+	if 'rowLabel' not in scrapeTrainingData.__dict__:
+		scrapeTrainingData.rowLabel = ['EV Yield', 'Catch Rate', 'Base Friendship', 'Base Exp', 'Growth Rate']
+	if initLabel: return
+	
 	EV_yield        = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[1]/td/text()')
 	catch_rate      = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/text()')
 	catch_rate.extend(page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/small/text()'))
@@ -113,7 +124,11 @@ def scrapeTrainingData(page_html, debug=False):
 	
 	return [EV_yield, catch_rate, base_friendship, base_exp, growth_rate]
 
-def scrapeBreedingData(page_html, debug=False):
+def scrapeBreedingData(page_html, debug=False, initLabel=False):
+	if 'rowLabel' not in scrapeBreedingData.__dict__:
+		scrapeBreedingData.rowLabel = ['Egg Groups', 'Gender', 'Egg Cycles']
+	if initLabel: return
+	
 	egg_groups = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[1]/td/a/text()')
 	gender     = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[2]/td/span/text()')
 	egg_cycles = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[3]/td/text()')
@@ -127,7 +142,11 @@ def scrapeBreedingData(page_html, debug=False):
 	
 	return [egg_groups, gender, egg_cycles]
 	
-def scrapeBaseStatsData(page_html, debug=False):
+def scrapeBaseStatsData(page_html, debug=False, initLabel=False):
+	if 'rowLabel' not in scrapeBaseStatsData.__dict__:
+		scrapeBaseStatsData.rowLabel = ['HP', 'HP MIN', 'HP MAX', 'Attack', 'Attack MIN', 'Attack MAX', 'Defense', 'Defense MIN', 'Defense MAX', 'SP Attack', 'SP Attack MIN', 'SP Attack MAX', 'SP Defense', 'SP Defense MIN', 'SP Defense MAX', 'Speed', 'Speed MIN', 'Speed MAX', 'Base Total']
+	if initLabel: return
+	
 	hp             = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[1]/text()')
 	hp_min         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[3]/text()')
 	hp_max         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[4]/text()')
@@ -171,7 +190,11 @@ def scrapeBaseStatsData(page_html, debug=False):
 		
 	return [hp, hp_min, hp_max, attack, attack_min, attack_max, defense, defense_min, defense_max, sp_attack, sp_attack_min, sp_attack_max, sp_defense, sp_defense_min, sp_defense_max, speed, speed_min, speed_max, base_total]
 
-def scrapeTypeDefencesData(page_html, debug=False):
+def scrapeTypeDefencesData(page_html, debug=False, initLabel=False):
+	if 'rowLabel' not in scrapeTypeDefencesData.__dict__:
+		scrapeTypeDefencesData.rowLabel = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy']
+	if initLabel: return
+	
 	nor      = page_html.xpath('(//table[@class="type-table type-table-pokedex"])[1]/tr[2]/td[1]/@title')
 	nor.extend(page_html.xpath('(//table[@class="type-table type-table-pokedex"])[1]/tr[2]/td[1]/text()'))
 	if len(nor) == 1: nor.extend('0')
@@ -251,3 +274,20 @@ def scrapeTypeDefencesData(page_html, debug=False):
 		print(f'fai: {fai}')
 
 	return [nor, fir, wat, ele, gra, ice, fig, poi, gro, fly, psy, bug, roc, gho, dra, dar, ste, fai]
+
+def initLabels():
+	#each scrape function needs to run at least once to set psudo static variable rowLabel
+	scrapePokedexData([], initLabel=True)
+	scrapeTrainingData([], initLabel=True)
+	scrapeBreedingData([], initLabel=True)
+	scrapeBaseStatsData([], initLabel=True)
+	scrapeTypeDefencesData([], initLabel=True)
+
+	rowLabels = []
+	rowLabels.extend(scrapePokedexData.rowLabel)
+	rowLabels.extend(scrapeTrainingData.rowLabel)
+	rowLabels.extend(scrapeBreedingData.rowLabel)
+	rowLabels.extend(scrapeBaseStatsData.rowLabel)
+	rowLabels.extend(scrapeTypeDefencesData.rowLabel)
+
+	return rowLabels

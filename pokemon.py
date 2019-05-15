@@ -10,6 +10,9 @@ verifyPokemonDIR(pokemon_dir)
 with open('pokemon.csv', mode='w') as file:
 	csv_file = csv.writer(file)
 	
+	rowLabels = initLabels()
+	csv_file.writerow(rowLabels)
+	
 	for pokemon in pokemon_https:
 		page_html = GETPokemonRequest(pokemon, pokemon_dir)
 		
