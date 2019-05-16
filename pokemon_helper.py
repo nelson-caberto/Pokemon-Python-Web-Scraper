@@ -77,16 +77,26 @@ def scrapePokedexData(page_html, debug=False, initLabel=False):
 	
 	name        = page_html.xpath('//main/h1/text()')
 	name        = name[0]
+	
 	national_no = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[1]/td/strong/text()')
 	types       = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[2]/td/a/text()')
+	
 	species     = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[3]/td/text()')
 	species     = species[0]
+	
 	height      = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[4]/td/text()')
-	height[0]   = height[0].replace(u'\xa0', ' ')
+	height      = height[0]
+	height      = height.replace(u'\xa0', ' ')
+	
 	weight      = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[5]/td/text()')
-	weight[0]   = weight[0].replace(u'\xa0', ' ')
+	weight      = weight[0]
+	weight      = weight.replace(u'\xa0', ' ')
+	
 	abilities   = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[6]/td/span/a/text()')
+	
 	abilities_h = page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[6]/td/small/a/text()')
+	abilities_h = abilities_h[0] if abilities_h else ''
+	
 	local_no    = dict(zip(page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[7]/td/small/text()'), page_html.xpath('(//table[@class="vitals-table"])[1]/tbody/tr[7]/td/text()')))
 
 	if debug:
@@ -108,12 +118,20 @@ def scrapeTrainingData(page_html, debug=False, initLabel=False):
 	if initLabel: return
 	
 	EV_yield        = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[1]/td/text()')
+	EV_yield        = EV_yield[0]
+	EV_yield        = EV_yield[2:]
+	
 	catch_rate      = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/text()')
 	catch_rate.extend(page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[2]/td/small/text()'))
+	
 	base_friendship = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[3]/td/text()')
 	base_friendship.extend(page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[3]/td/small/text()'))
+	
 	base_exp        = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[4]/td/text()')
+	base_exp		= base_exp[0]
+	
 	growth_rate     = page_html.xpath('(//table[@class="vitals-table"])[2]/tbody/tr[5]/td/text()')
+	growth_rate     = growth_rate[0]
 
 	if debug:
 		print(f'EV_yield: {EV_yield}')
@@ -130,7 +148,10 @@ def scrapeBreedingData(page_html, debug=False, initLabel=False):
 	if initLabel: return
 	
 	egg_groups = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[1]/td/a/text()')
+	
 	gender     = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[2]/td/span/text()')
+	gender     = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[2]/td/text()') if not gender else gender
+	
 	egg_cycles = page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[3]/td/text()')
 	del egg_cycles[-1]
 	egg_cycles.extend(page_html.xpath('(//table[@class="vitals-table"])[3]/tbody/tr[3]/td/small/text()'))
@@ -147,25 +168,25 @@ def scrapeBaseStatsData(page_html, debug=False, initLabel=False):
 		scrapeBaseStatsData.rowLabel = ['HP', 'HP MIN', 'HP MAX', 'Attack', 'Attack MIN', 'Attack MAX', 'Defense', 'Defense MIN', 'Defense MAX', 'SP Attack', 'SP Attack MIN', 'SP Attack MAX', 'SP Defense', 'SP Defense MIN', 'SP Defense MAX', 'Speed', 'Speed MIN', 'Speed MAX', 'Base Total']
 	if initLabel: return
 	
-	hp             = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[1]/text()')
-	hp_min         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[3]/text()')
-	hp_max         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[4]/text()')
-	attack         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[1]/text()')
-	attack_min     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[3]/text()')
-	attack_max     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[4]/text()')
-	defense        = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[1]/text()')
-	defense_min    = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[3]/text()')
-	defense_max    = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[4]/text()')
-	sp_attack      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[1]/text()')
-	sp_attack_min  = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[3]/text()')
-	sp_attack_max  = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[4]/text()')
-	sp_defense     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[1]/text()')
-	sp_defense_min = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[3]/text()')
-	sp_defense_max = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[4]/text()')
-	speed          = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[1]/text()')
-	speed_min      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[3]/text()')
-	speed_max      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[4]/text()')
-	base_total     = page_html.xpath('(//table[@class="vitals-table"])[4]/tfoot/tr/td/b/text()')
+	hp             = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[1]/text()')[0]
+	hp_min         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[3]/text()')[0]
+	hp_max         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[1]/td[4]/text()')[0]
+	attack         = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[1]/text()')[0]
+	attack_min     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[3]/text()')[0]
+	attack_max     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[2]/td[4]/text()')[0]
+	defense        = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[1]/text()')[0]
+	defense_min    = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[3]/text()')[0]
+	defense_max    = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[3]/td[4]/text()')[0]
+	sp_attack      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[1]/text()')[0]
+	sp_attack_min  = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[3]/text()')[0]
+	sp_attack_max  = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[4]/td[4]/text()')[0]
+	sp_defense     = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[1]/text()')[0]
+	sp_defense_min = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[3]/text()')[0]
+	sp_defense_max = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[5]/td[4]/text()')[0]
+	speed          = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[1]/text()')[0]
+	speed_min      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[3]/text()')[0]
+	speed_max      = page_html.xpath('(//table[@class="vitals-table"])[4]/tbody/tr[6]/td[4]/text()')[0]
+	base_total     = page_html.xpath('(//table[@class="vitals-table"])[4]/tfoot/tr/td/b/text()')[0]
 
 	if debug:
 		print(f'hp: {hp}')

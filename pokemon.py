@@ -16,7 +16,7 @@ with open('pokemon.csv', mode='w') as file:
 	for pokemon in pokemon_https:
 		page_html = GETPokemonRequest(pokemon, pokemon_dir)
 		
-		#scrape data
+		#scrape data, if order changes update initLabels
 		data = []
 		data.extend(scrapePokedexData(page_html, debug))
 		data.extend(scrapeTrainingData(page_html, debug))
