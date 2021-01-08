@@ -7,7 +7,7 @@ pokemon_https = getPokemonHTTPList("https://pokemondb.net/pokedex/all")
 pokemon_dir = "pokemon"
 verifyPokemonDIR(pokemon_dir)
 
-with open('pokemon.csv', mode='w') as file:
+with open('pokemon.csv', mode='w', encoding='UTF-8') as file:
 	csv_file = csv.writer(file)
 	
 	rowLabels = initLabels()
